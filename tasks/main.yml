@@ -4,15 +4,20 @@
 - name: install docker-py
   pip: name=docker-py
 
+- name: create /var/lib/docker-extvols/portainer-data
+  file: state=directory dest=/var/lib/docker-extvols/portainer-data
+
 - name: start a Portainer container
   docker_container:
     image: imflop/portainer-fork:linux-amd64-latest
     volumes:
         - "/var/run/docker.sock:/var/run/docker.sock"
+        - "/var/lib/docker-extvols/portainer-data:/data"
     name: portainer
     restart_policy: always
     state: started
     network_mode: host
+    read_only: yes
     log_options:
         max-size: 200m
         max-file: 2
